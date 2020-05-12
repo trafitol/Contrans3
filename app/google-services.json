@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "459728314207",
+    "firebase_url": "https://contrans2-86ea6.firebaseio.com",
+    "project_id": "contrans2-86ea6",
+    "storage_bucket": "contrans2-86ea6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:459728314207:android:55587c94ae930fdbf360ea",
+        "android_client_info": {
+          "package_name": "com.example.contrans2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "459728314207-vni0t7gbtnac38jhllq39ljajdg1u1hk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.contrans2",
+            "certificate_hash": "d18073237f7a7adf32bbc109629040538ececaa0"
+          }
+        },
+        {
+          "client_id": "459728314207-s3g24p2h8t5l6vn91gn9rrbnhmoh3ku3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAm7VsQAV9JSqtWuia8RWD0CktxP38Pnr8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "459728314207-s3g24p2h8t5l6vn91gn9rrbnhmoh3ku3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
