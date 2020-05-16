@@ -2,19 +2,22 @@ package com.example.contrans2;
 
 public class GetSetOpenGroups {
 private String name;
-private String date_created;
+private String user;
 private String favoring;
 private String against;
-// zie https://www.youtube.com/watch?v=vyMH0NsY4q4 recyclerview tutorial
-    // ik snap die constructors niet goed, wanneer wel een lege, wanneer niet.....
+private String message;
+private String time_created;
+
     public GetSetOpenGroups() {
     }
 
-    public GetSetOpenGroups(String name, String date_created, String favoring, String against) {
+    public GetSetOpenGroups(String name, String user, String favoring, String against, String message, String time_created) {
         this.name = name;
-        this.date_created = date_created;
+        this.user = user;
         this.favoring = favoring;
         this.against = against;
+        this.message = message;
+        this.time_created = time_created;
     }
 
     public String getName() {
@@ -25,12 +28,12 @@ private String against;
         this.name = name;
     }
 
-    public String getDate_created() {
-        return date_created;
+    public String getUser() {
+        return user;
     }
 
-    public void setDate_created(String date_created) {
-        this.date_created = date_created;
+    public void setUser(String user) {
+        this.user = user;
     }
 
     public String getFavoring() {
@@ -48,4 +51,22 @@ private String against;
     public void setAgainst(String against) {
         this.against = against;
     }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getTime_created() {
+        return time_created;
+    }
+
+    public void setTime_created(String time_created) {
+        this.time_created = time_created;
+    }
 }
+
+

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+
+    <TextView
+        android:id="@+id/my_Groups_Group_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:text="GroupName"
+            android:textSize="16sp"
+        android:textStyle="bold" />
+
+
+    <TextView
+        android:id="@+id/my_Groups_By_User"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/my_Groups_Group_name"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="2dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textSize="10dp"
+        android:text="UserName" />
+
+    <TextView
+        android:id="@+id/my_Groups_Message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/my_Groups_By_User"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="2dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="This is a very long text and we need to show 3...(dots)" />
+
+    <TextView
+        android:id="@+id/my_Groups_Time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/my_Groups_Group_name"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:text="Time" />
+
+    <TextView
+        android:id="@+id/my_Groups_Against"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/my_Groups_Message"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="2dp"
+        android:text="Against"/>
+
+    <TextView
+        android:id="@+id/my_Groups_Favoring"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/my_Groups_Message"
+        android:layout_alignBaseline="@id/my_Groups_Against"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:text="Favoring"/>
+
+
+
+</RelativeLayout>

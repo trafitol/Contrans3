@@ -10,7 +10,8 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.renderscript.Sampler;
+
+import android.provider.DocumentsContract;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         //referance naar database
         RootRef = FirebaseDatabase.getInstance().getReference();
         GroupNameKey=FirebaseDatabase.getInstance().getReference().child("GroupsMetaData");
+
 
         mtoolbar=(Toolbar) findViewById(R.id.main_page_toolbar);
                 setSupportActionBar(mtoolbar);
@@ -220,7 +222,7 @@ return true;
     private void CreateNewGroupFavoring(final String groupName)
     {
         String groupUID = GroupNameKey.push().getKey();
-        String currentUserId = mAuth.getCurrentUser().getUid();
+        final String currentUserId = mAuth.getCurrentUser().getUid();
         Calendar ccalForDate = Calendar.getInstance();
         SimpleDateFormat currentDateFormat = new SimpleDateFormat("MMM dd, yyyy");
         currentDate=currentDateFormat.format(ccalForDate.getTime());
@@ -237,34 +239,54 @@ return true;
         GroupNameKeyRef = GroupNameKey.child(groupUID);
 
 
-        HashMap<String, Object> createGroupMap = new HashMap<>();
-        createGroupMap.put("name", groupName);
-        createGroupMap.put("user", currentUserId);
-        createGroupMap.put("favoring", "favor 1");
-        createGroupMap.put("against", "against 0");
-        createGroupMap.put("date created", currentDate);
-        createGroupMap.put("time created", currentTime);
+        //child is een subclass van de currentuserid waar we de username gaan retrieven c.q. verifieren
+        //Zie firebase14 tutorial 19.35. users is child van rootref en currentuserid is weer subchild van users
+        RootRef.child("Users").child(currentUserId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-        GroupNameKeyRef.updateChildren(createGroupMap)
+                    String profileName=dataSnapshot.child("name").getValue().toString();
 
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful())
-                        {
-                            Toast.makeText(MainActivity.this, groupName + " group is Created Succesfully", Toast.LENGTH_SHORT).show();
+                HashMap<String, Object> createGroupMap = new HashMap<>();
+                createGroupMap.put("name", groupName);
+                createGroupMap.put("user", currentUserId);
+                createGroupMap.put("username", profileName);
+                createGroupMap.put("favoring", "favor 1");
+                createGroupMap.put("against", "against 0");
+                createGroupMap.put("date_created", currentDate);
+                createGroupMap.put("message", "no Messages for now");
+                createGroupMap.put("time_created", currentTime);
+
+                GroupNameKeyRef.updateChildren(createGroupMap)
+
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful())
+                                {
+                                    Toast.makeText(MainActivity.this, groupName + " group is Created Succesfully", Toast.LENGTH_SHORT).show();
 
 
 
-                        }
-                    }
-                });
+                                }
+                            }
+                        });
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(MainActivity.this, "Error : " + databaseError, Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
+
 
     private void CreateNewGroupAgainst(final String groupName)
     {
         String groupUID = GroupNameKey.push().getKey();
-        String currentUserId = mAuth.getCurrentUser().getUid();
+        final String currentUserId = mAuth.getCurrentUser().getUid();
         Calendar ccalForDate = Calendar.getInstance();
         SimpleDateFormat currentDateFormat = new SimpleDateFormat("MMM dd, yyyy");
         currentDate=currentDateFormat.format(ccalForDate.getTime());
@@ -280,29 +302,45 @@ return true;
         //Ref to the messagekey
         GroupNameKeyRef = GroupNameKey.child(groupUID);
 
+        RootRef.child("Users").child(currentUserId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String profileName=dataSnapshot.child("name").getValue().toString();
 
-        HashMap<String, Object> createGroupMap = new HashMap<>();
-        createGroupMap.put("name", groupName);
-        createGroupMap.put("user", currentUserId);
-        createGroupMap.put("favoring", "favor 0");
-        createGroupMap.put("against", "against 1");
-        createGroupMap.put("date_created", currentDate);
-        createGroupMap.put("time_created", currentTime);
+                HashMap<String, Object> createGroupMap = new HashMap<>();
+                createGroupMap.put("name", groupName);
+                createGroupMap.put("user", currentUserId);
+                createGroupMap.put("username", profileName);
+                createGroupMap.put("favoring", "favor 0");
+                createGroupMap.put("against", "against 1");
+                createGroupMap.put("date_created", currentDate);
+                createGroupMap.put("message", "no Messages for now");
+                createGroupMap.put("time_created", currentTime);
 
-        GroupNameKeyRef.updateChildren(createGroupMap)
+                GroupNameKeyRef.updateChildren(createGroupMap)
 
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful())
-                        {
-                            Toast.makeText(MainActivity.this, groupName + " group is Created Succesfully", Toast.LENGTH_SHORT).show();
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful())
+                                {
+                                    Toast.makeText(MainActivity.this, groupName + " group is Created Succesfully", Toast.LENGTH_SHORT).show();
 
 
 
-                        }
-                    }
-                });
+                                }
+                            }
+                        });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
     }
 
 
