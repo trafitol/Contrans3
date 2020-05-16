@@ -58,11 +58,6 @@ public class GroupChatActivity extends AppCompatActivity {
         UsersRef= FirebaseDatabase.getInstance().getReference().child("Users");
         GroupNameRef= FirebaseDatabase.getInstance().getReference().child("Groups").child(currentGroupName);
 
-
-
-
-
-
     InitializeFields();
 
     getUserInfo();

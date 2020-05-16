@@ -3,6 +3,7 @@ package com.example.contrans2;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
@@ -27,7 +28,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
+
 public class MainActivity extends AppCompatActivity {
+
+    static {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+    }
 
     private Toolbar mtoolbar;
     private ViewPager myViewPager;
@@ -37,7 +46,11 @@ public class MainActivity extends AppCompatActivity {
     //authenticatie
     private FirebaseAuth mAuth;
     //reference naar database
-    private DatabaseReference RootRef;
+    private DatabaseReference RootRef,GroupNameKey,GroupNameKeyRef;
+    private String currentDate, currentTime;
+
+
+
 
 
     @Override
@@ -48,8 +61,11 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
+
+
         //referance naar database
         RootRef = FirebaseDatabase.getInstance().getReference();
+        GroupNameKey=FirebaseDatabase.getInstance().getReference().child("GroupsMetaData");
 
         mtoolbar=(Toolbar) findViewById(R.id.main_page_toolbar);
                 setSupportActionBar(mtoolbar);
@@ -140,61 +156,156 @@ return true;
     }
 
 
-    private void RequestNewGroup()
-    {
+    private void RequestNewGroup() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.AlertDialog);
         builder.setTitle("Enter Group Name");
 
         final EditText groupNameField = new EditText(MainActivity.this);
-                groupNameField.setHint("Place your GroupName");
+        groupNameField.setHint("Place your GroupName");
         builder.setView(groupNameField);
 
         //aanmaken creer nieuwe groep knop
-        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Against", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 String groupName = groupNameField.getText().toString();
 
-                if(TextUtils.isEmpty(groupName))
-                {
-                    Toast.makeText(MainActivity.this, "Please write GroupName", Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
+                if (TextUtils.isEmpty(groupName)) {
+                    Toast.makeText(MainActivity.this, "State your subject in your language", Toast.LENGTH_SHORT).show();
+                } else {
                     //Voert deze method uit, maakt groupname aan in firebase
-CreateNewGroup(groupName);
+
+                    CreateNewGroupAgainst(groupName);
+
                 }
 
 
             }
         });
-        //cancel knop voor creer groep
+
+        builder.setNeutralButton("Favoring", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String groupName = groupNameField.getText().toString();
+
+                        if (TextUtils.isEmpty(groupName)) {
+                            Toast.makeText(MainActivity.this, "State your subject in your language", Toast.LENGTH_SHORT).show();
+                        } else {
+                            //Voert deze method uit, maakt groupname aan in firebase
+
+                        CreateNewGroupFavoring(groupName);
+                        }
+                        }
+                    });
+
+                    //cancel knop voor creer groep
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i)
-            {
-dialogInterface.cancel();
-            }
-        });
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.cancel();
+
+                        }
+                    });
 
         builder.show();
+
 
     }
 
 
-    private void CreateNewGroup(final String groupName)
+
+
+
+
+    private void CreateNewGroupFavoring(final String groupName)
     {
-        RootRef.child("Groups").child(groupName).setValue("")
+        String groupUID = GroupNameKey.push().getKey();
+        String currentUserId = mAuth.getCurrentUser().getUid();
+        Calendar ccalForDate = Calendar.getInstance();
+        SimpleDateFormat currentDateFormat = new SimpleDateFormat("MMM dd, yyyy");
+        currentDate=currentDateFormat.format(ccalForDate.getTime());
+
+        Calendar ccalForTime = Calendar.getInstance();
+        //moet er a.m. p.m. uren in?
+        SimpleDateFormat currentTimeFormat = new SimpleDateFormat("HH:mm");
+        currentTime=currentTimeFormat.format(ccalForDate.getTime());
+
+//datum en tijd informatie moet in hashmap opgeslagen worden, zodat in firebase bewaard kan worden in de vorm van een groupmessagekey
+        HashMap<String,Object> groupNameKeyMap = new HashMap<>();
+        GroupNameKey.updateChildren(groupNameKeyMap);
+        //Ref to the messagekey
+        GroupNameKeyRef = GroupNameKey.child(groupUID);
+
+
+        HashMap<String, Object> createGroupMap = new HashMap<>();
+        createGroupMap.put("name", groupName);
+        createGroupMap.put("user", currentUserId);
+        createGroupMap.put("favoring", "favor 1");
+        createGroupMap.put("against", "against 0");
+        createGroupMap.put("date created", currentDate);
+        createGroupMap.put("time created", currentTime);
+
+        GroupNameKeyRef.updateChildren(createGroupMap)
+
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful())
                         {
                             Toast.makeText(MainActivity.this, groupName + " group is Created Succesfully", Toast.LENGTH_SHORT).show();
+
+
+
                         }
                     }
                 });
     }
+
+    private void CreateNewGroupAgainst(final String groupName)
+    {
+        String groupUID = GroupNameKey.push().getKey();
+        String currentUserId = mAuth.getCurrentUser().getUid();
+        Calendar ccalForDate = Calendar.getInstance();
+        SimpleDateFormat currentDateFormat = new SimpleDateFormat("MMM dd, yyyy");
+        currentDate=currentDateFormat.format(ccalForDate.getTime());
+
+        Calendar ccalForTime = Calendar.getInstance();
+        //moet er a.m. p.m. uren in?
+        SimpleDateFormat currentTimeFormat = new SimpleDateFormat("HH:mm");
+        currentTime=currentTimeFormat.format(ccalForDate.getTime());
+
+//datum en tijd informatie moet in hashmap opgeslagen worden, zodat in firebase bewaard kan worden in de vorm van een groupmessagekey
+        HashMap<String,Object> groupNameKeyMap = new HashMap<>();
+        GroupNameKey.updateChildren(groupNameKeyMap);
+        //Ref to the messagekey
+        GroupNameKeyRef = GroupNameKey.child(groupUID);
+
+
+        HashMap<String, Object> createGroupMap = new HashMap<>();
+        createGroupMap.put("name", groupName);
+        createGroupMap.put("user", currentUserId);
+        createGroupMap.put("favoring", "favor 0");
+        createGroupMap.put("against", "against 1");
+        createGroupMap.put("date_created", currentDate);
+        createGroupMap.put("time_created", currentTime);
+
+        GroupNameKeyRef.updateChildren(createGroupMap)
+
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful())
+                        {
+                            Toast.makeText(MainActivity.this, groupName + " group is Created Succesfully", Toast.LENGTH_SHORT).show();
+
+
+
+                        }
+                    }
+                });
+    }
+
+
 
 
     //vanaf hier wordt user van mainactivity naar loginactivity gestuurd

@@ -50,8 +50,8 @@ public class GroupsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Layout Inflater pakt de xml als input en vult met de view objecten (listview/arrayadapter)
         groupFragmentView = inflater.inflate(R.layout.fragment_groups, container, false);
-
-        GroupRef= FirebaseDatabase.getInstance().getReference().child("Groups");
+//"Groups" aangepast naar "GroupsMetaData"
+        GroupRef= FirebaseDatabase.getInstance().getReference().child("GroupsMetaData");
 
 IntializeFields();
 
